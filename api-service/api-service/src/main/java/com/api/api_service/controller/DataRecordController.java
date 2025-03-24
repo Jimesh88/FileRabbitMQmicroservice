@@ -1,5 +1,6 @@
 package com.api.api_service.controller;
 
+import com.api.api_service.exception.RecordNotFound;
 import com.api.api_service.model.DataRecord;
 import com.api.api_service.service.DataRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,12 @@ public class DataRecordController {
             @RequestParam(value = "pagesize", defaultValue = "10") int pageSize,
             @RequestParam(value = "name", defaultValue = "") String name) {
 
-        return dataRecordService.searchRecords(name, pageNo, pageSize);
+
+
+       Page<DataRecord> records= dataRecordService.searchRecords(name, pageNo, pageSize);
+        if (records.isEmpty()) {
+            throw new RecordNotFound("No records found for the provided name: " + name);
+        }
+        return records;
     }
 }
